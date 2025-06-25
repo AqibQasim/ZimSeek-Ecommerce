@@ -1,0 +1,26 @@
+# Ignore environment variables
+.env
+
+# Ignore node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Optional: Ignore build/dist if you're compiling
+dist/
+build/
+
+
+serviceAccountKey.json
