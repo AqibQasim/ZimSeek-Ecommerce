@@ -7,7 +7,8 @@ async function registerSeller(
   phone,
   businessType,
   city,
-  suburb
+  suburb,
+  createdAt
 ) {
   const sellerId = db.ref("sellers").push().key;
   await db.ref(`sellers/${sellerId}`).set({
@@ -17,6 +18,7 @@ async function registerSeller(
     phone,
     businessType,
     location: { city, suburb },
+    createdAt,
   });
   return sellerId;
 }
@@ -31,4 +33,14 @@ async function getSellerByEmail(email) {
   return sellers ? Object.keys(sellers)[0] : null;
 }
 
-module.exports = { registerSeller, getSellerByEmail };
+async function getSellerByPhone(phone) {
+  const snapshot = await db
+    .ref("sellers")
+    .orderByChild("phone")
+    .equalTo(phone)
+    .once("value");
+  const sellers = snapshot.val();
+  return sellers ? Object.keys(sellers)[0] : null;
+}
+
+module.exports = { registerSeller, getSellerByEmail, getSellerByPhone };

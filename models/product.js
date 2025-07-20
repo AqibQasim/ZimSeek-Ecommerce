@@ -1,6 +1,14 @@
 const db = require("../config/firebase");
 
-async function addProduct(sellerId, name, category, city, price, unit) {
+async function addProduct(
+  sellerId,
+  name,
+  category,
+  city,
+  price,
+  unit,
+  createdAt
+) {
   const normalizedCategory = category
     .toLowerCase()
     .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -12,6 +20,7 @@ async function addProduct(sellerId, name, category, city, price, unit) {
     price: parseFloat(price),
     unit,
     sellerId,
+    createdAt,
   });
   return productId;
 }

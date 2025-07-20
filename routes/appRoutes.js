@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const twilio = require("twilio");
-const { registerSeller, getSellerByEmail } = require("../models/seller");
+const {
+  registerSeller,
+  getSellerByEmail,
+  getSellerByPhone,
+} = require("../models/seller");
 const { registerBuyer, getBuyerByPhone } = require("../models/buyer");
 const { createInquiry } = require("../models/inquiry");
 const { createOrder } = require("../models/order");
@@ -40,7 +44,7 @@ const states = {
 router.post("/message", async (req, res) => {
   console.log("Received message:", req.body.Body, "from:", req.body.From);
   const incomingMsg = req.body.Body ? req.body.Body.toLowerCase().trim() : "";
-  const from = req.body.From || "whatsapp:+14155238886";
+  const from = req.body.From || "whatsapp:+12183048034";
   let message = "";
 
   if (!currentState[from])
@@ -66,7 +70,7 @@ router.post("/message", async (req, res) => {
         currentState[from].data.hasAccount = incomingMsg;
         if (incomingMsg === "yes") {
           if (currentState[from].data.userType === "seller") {
-            message = "Enter your email:";
+            message = "Enter your phone number:";
             currentState[from].state = states.REGISTRATION_EMAIL;
           } else {
             message = "Enter your phone number:";
@@ -98,14 +102,14 @@ router.post("/message", async (req, res) => {
     case states.REGISTRATION_EMAIL:
       currentState[from].data.email = incomingMsg;
       if (currentState[from].data.hasAccount === "yes") {
-        const sellerId = await getSellerByEmail(incomingMsg);
+        const sellerId = await getSellerByPhone(incomingMsg);
         if (sellerId) {
           const seller = (
             await db.ref(`sellers/${sellerId}`).once("value")
           ).val();
           currentState[from].data.sellerId = sellerId;
 
-          message = `Welcome back, ${seller.sellerName}! \n Type "add product" to add a new product.`;
+          message = `Welcome back, ${seller.sellerName}! \n Type "add product" to add a new product. \n Or type "done" to end chat.`;
           currentState[from].state =
             currentState[from].data.userType === "seller"
               ? states.SELLER_ADD_PRODUCT
@@ -127,7 +131,7 @@ router.post("/message", async (req, res) => {
           const buyer = (await db.ref(`buyers/${buyerId}`).once("value")).val();
           currentState[from].data.buyerId = buyerId;
 
-          message = `Welcome back, ${buyer.name}! \n Feel free to explore our products by asking, for example, "what's the price of chicken" or "show me grains"`;
+          message = `Welcome back, ${buyer.name}! \n Feel free to explore our products by asking, for example, "what's the price of chicken" or "show me grains \n Or type "done" to end chat.`;
           currentState[from].state = states.BUYER_QUERY;
         } else {
           message = 'No account found. Please register with "no".';
@@ -140,7 +144,8 @@ router.post("/message", async (req, res) => {
         } else {
           const buyerId = await registerBuyer(
             currentState[from].data.name,
-            incomingMsg
+            incomingMsg,
+            new Date().toISOString()
           );
           message = `Welcome, ${currentState[from].data.name}! \n Feel free to explore our products by asking, for example, "what's the price of chicken" or "show me grains"`;
           currentState[from].state = states.BUYER_QUERY;
@@ -166,7 +171,8 @@ router.post("/message", async (req, res) => {
         currentState[from].data.phone,
         currentState[from].data.businessType,
         currentState[from].data.city,
-        currentState[from].data.suburb
+        currentState[from].data.suburb,
+        new Date().toISOString()
       );
       currentState[from].data.sellerId = sellerId;
       message = `Welcome, ${currentState[from].data.name}! \n Type "add product" to add a new product.`;
@@ -177,8 +183,11 @@ router.post("/message", async (req, res) => {
         message =
           "Enter product details (NAME | CATEGORY | CITY | PRICE | UNIT):";
         currentState[from].state = "seller_add_product_details";
+      } else if (incomingMsg.toLowerCase() === "done") {
+        message = "Chat ended. Type anything to start again.";
+        currentState[from].state = states.START;
       } else {
-        message = 'Type "add product" to add a new product.';
+        message = 'Type "add product" to add more or "done" to end chat.';
       }
       break;
     case "seller_add_product_details":
@@ -192,65 +201,76 @@ router.post("/message", async (req, res) => {
           category,
           city,
           price,
-          unit
+          unit,
+          new Date().toISOString()
         );
-        message = `Product ${name} added successfully! Type "add product" to add more or "done".`;
-        currentState[from].state = states.SELLER_ADD_PRODUCT;
+        message = `Product ${name} added successfully! Type "add product" to add more or "done" to end chat.`;
+        currentState[from].state = states.SELLER_ADD_PRODUCT; // Stay in this state for next input
       } else {
         message = "Invalid format. Use: NAME | CATEGORY | CITY | PRICE | UNIT";
       }
       break;
+
     case states.BUYER_QUERY:
-      const queryWords = incomingMsg.split(/\s+/);
-      let queryType = queryWords[0];
-      let queryValue = queryWords.slice(1).join(" ").toLowerCase();
-      let products = [];
-
-      if (
-        queryType === "how" ||
-        queryType === "what" ||
-        queryType === "price"
-      ) {
-        products =
-          (await getProductsByName(queryValue)) ||
-          (await getProductsByCategory(queryValue));
+      if (incomingMsg.toLowerCase() === "done") {
+        message = "Chat ended. Type anything to start again.";
+        currentState[from].state = states.START;
       } else {
-        products =
-          (await getProductsByName(incomingMsg)) ||
-          (await getProductsByCategory(incomingMsg));
-      }
+        const queryWords = incomingMsg.split(/\s+/);
+        let queryType = queryWords[0];
+        let queryValue = queryWords.slice(1).join(" ").toLowerCase();
+        let products = [];
 
-      if (products.length > 0) {
-        message = "Available products:\n";
-        for (const product of products) {
-          const snapshot = await db
-            .ref(`sellers/${product.sellerId}`)
-            .once("value");
-          const seller = snapshot.val();
-          if (seller) {
-            message += `${product.name} - ${seller.storeName}: $${product.price} ${product.unit} (City: ${product.city})\n`;
-          }
+        if (
+          queryType === "how" ||
+          queryType === "what" ||
+          queryType === "price"
+        ) {
+          products =
+            (await getProductsByName(queryValue)) ||
+            (await getProductsByCategory(queryValue));
+        } else {
+          products =
+            (await getProductsByName(incomingMsg)) ||
+            (await getProductsByCategory(incomingMsg));
         }
-        // Save buyer inquiry
-        await createInquiry(
-          currentState[from].data.buyerId,
-          incomingMsg,
-          new Date().toISOString()
-        );
-        currentState[from].data.products = products; // Store products for later use
-        message += "\nWould you like to purchase? (yes/no) or query again.";
-        currentState[from].state = states.BUYER_PURCHASE;
-      } else {
-        message =
-          'No products found. Try another query (e.g., "chicken" or "grains").';
+
+        if (products.length > 0) {
+          message = "Available products:\n";
+          for (const product of products) {
+            const snapshot = await db
+              .ref(`sellers/${product.sellerId}`)
+              .once("value");
+            const seller = snapshot.val();
+            if (seller) {
+              message += `${product.name} - ${seller.storeName}: $${product.price} ${product.unit} (City: ${product.city})\n`;
+            }
+          }
+          // Save buyer inquiry
+          await createInquiry(
+            currentState[from].data.buyerId,
+            incomingMsg,
+            new Date().toISOString()
+          );
+          currentState[from].data.products = products; // Store products for later use
+          message += `\nWould you like to purchase? (yes/no) or query again \n or type "done" to end the chat.`;
+          currentState[from].state = states.BUYER_PURCHASE;
+        } else {
+          message =
+            'No products found. Try another query (e.g., "chicken" or "grains").';
+        }
       }
       break;
     case states.BUYER_PURCHASE:
-      if (incomingMsg.toLowerCase() === "yes") {
+      if (incomingMsg.toLowerCase() === "done") {
+        message = "Chat ended. Type anything to start again.";
+        currentState[from].state = states.START;
+      } else if (incomingMsg.toLowerCase() === "yes") {
         message = "Enter the store name to purchase from:";
         currentState[from].state = "buyer_select_store";
       } else {
-        message = 'Type "yes" to purchase or query again.';
+        message =
+          'Type "yes" to purchase or query again \n or type "done" to end the chat.';
         currentState[from].state = states.BUYER_QUERY;
       }
       break;
@@ -281,9 +301,10 @@ router.post("/message", async (req, res) => {
           currentState[from].data.deliveryAddress,
           new Date().toISOString()
         );
-        message = `Purchase successful! Order placed! (ID: ${selectedProduct.productId})`;
+        message = `Purchase successful! Order placed! (ID: ${selectedProduct.productId}) \n Thank you for your order from ${currentState[from].data.storeName}. \n Type "done" to end the chat or "query" to search for more products.`;
       } else {
-        message = "No matching product found for the selected store.";
+        message =
+          "No matching product found for the selected store. Please try again. type 'done' to end the chat or query again to search for more products.";
       }
       currentState[from].state = states.BUYER_QUERY;
       break;
@@ -295,7 +316,7 @@ router.post("/message", async (req, res) => {
   try {
     await client.messages.create({
       body: message,
-      from: "whatsapp:+14155238886",
+      from: "whatsapp:+12183048034",
       to: from,
     });
     res.writeHead(200, { "Content-Type": "text/xml" });

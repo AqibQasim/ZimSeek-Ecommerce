@@ -1,6 +1,12 @@
 const db = require("../config/firebase");
 
-async function createOrder(buyerId, productId, sellerId, deliveryInfo) {
+async function createOrder(
+  buyerId,
+  productId,
+  sellerId,
+  deliveryInfo,
+  createdAt
+) {
   const orderId = db.ref("orders").push().key;
   await db.ref(`orders/${orderId}`).set({
     buyerId,
@@ -8,6 +14,7 @@ async function createOrder(buyerId, productId, sellerId, deliveryInfo) {
     sellerId,
     deliveryInfo,
     status: "Pending",
+    createdAt,
   });
   return orderId;
 }
