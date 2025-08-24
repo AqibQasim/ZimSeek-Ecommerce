@@ -5,7 +5,8 @@ async function createOrder(
   productId,
   sellerId,
   deliveryInfo,
-  createdAt
+  createdAt,
+  quantity
 ) {
   const orderId = db.ref("orders").push().key;
   await db.ref(`orders/${orderId}`).set({
@@ -14,6 +15,7 @@ async function createOrder(
     sellerId,
     deliveryInfo,
     status: "Pending",
+    quantity,
     createdAt,
   });
   return orderId;

@@ -9,9 +9,7 @@ async function addProduct(
   unit,
   createdAt
 ) {
-  const normalizedCategory = category
-    .toLowerCase()
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  const normalizedCategory = category.toLowerCase();
   const productId = db.ref("products").push().key;
   await db.ref(`products/${productId}`).set({
     name,
