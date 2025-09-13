@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const db = require("../config/firebase");
 const { registerSeller } = require("../models/seller");
 const { addProduct } = require("../models/product");
-const { addFarmerListing } = require("../models/FarmerListing");
+const { addFarmerListing } = require("../models/farmerListing");
 const twilio = require("twilio");
 const { registerBuyer } = require("../models/buyer.js");
 
