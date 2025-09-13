@@ -6,6 +6,7 @@ const appRoutes = require("./routes/appRoutesnew"); // Updated path
 app.use(express.urlencoded({ extended: true }));
 app.use("/whatsapp", appRoutes);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 module.exports = app; // Export the app for Vercel
