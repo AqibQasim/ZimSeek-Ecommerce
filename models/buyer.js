@@ -1,9 +1,13 @@
 const db = require("../config/firebase");
 
-async function registerBuyer(name, email, phone, createdAt) {
-  const buyerId = db.ref("buyers").push().key;
-  await db.ref(`buyers/${buyerId}`).set({ name, email, phone, createdAt });
-  return buyerId;
+async function registerBuyer(name, phone, timestamp) {
+  const newBuyerRef = db.ref("buyers").push();
+  await newBuyerRef.set({
+    name: name.toLowerCase(),
+    phone: phone,
+    createdAt: timestamp,
+  });
+  return newBuyerRef.key;
 }
 
 async function getBuyerByPhone(phone) {

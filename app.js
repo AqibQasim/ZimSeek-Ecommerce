@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-const appRoutes = require("./routes/appRoutes"); // Updated path
+// const appRoutes = require("./routes/appRoutes"); // Updated path
+const appRoutes = require("./routes/appRoutesnew"); // Updated path
 
 app.use(express.urlencoded({ extended: true }));
 app.use("/whatsapp", appRoutes);

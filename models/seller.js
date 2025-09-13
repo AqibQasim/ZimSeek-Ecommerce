@@ -2,10 +2,10 @@ const db = require("../config/firebase");
 
 async function registerSeller(
   sellerName,
-  storeName,
+  storeOrFarmName,
   email,
   phone,
-  businessType,
+  businessType, //retailer or farmer
   city,
   suburb,
   createdAt
@@ -13,11 +13,12 @@ async function registerSeller(
   const sellerId = db.ref("sellers").push().key;
   await db.ref(`sellers/${sellerId}`).set({
     sellerName,
-    storeName,
+    storeOrFarmName,
     email,
     phone,
-    businessType,
-    location: { city, suburb },
+    businessType, //retailer or farmer
+    city,
+    suburb,
     createdAt,
   });
   return sellerId;

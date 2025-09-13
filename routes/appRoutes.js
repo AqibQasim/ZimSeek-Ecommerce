@@ -66,6 +66,7 @@ const states = {
 };
 
 router.post("/message", async (req, res) => {
+  
   console.log("Received message:", req.body.Body, "from:", req.body.From);
   const incomingMsg = req.body.Body ? req.body.Body.toLowerCase().trim() : "";
   const from = req.body.From || "whatsapp:+12183048034";
