@@ -98,6 +98,7 @@ const states = {
   BUYER_CONNECT_SELLER: "buyer_connect_seller",
   BUYER_SEARCH_TYPE: "buyer_search_type",
   BUYER_SEARCH_PRODUCT_CUSTOM: "buyer_search_product_custom",
+  contact_admin: "contact_admin",
 };
 
 const categories = [
@@ -402,7 +403,7 @@ router.post("/message", async (req, res) => {
           const buyerId = Object.keys(buyers)[0];
           data.buyerId = buyerId;
           data.name = buyers[buyerId].name;
-          message = `🎉 Welcome back, ${data.name}! 👋\n\n🛒 What would you like to do today?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+          message = `🎉 Welcome back, ${data.name}! 👋\n\n🛒 What would you like to do today?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
           currentState[from].state = states.BUYER_MENU;
         } else {
           message =
@@ -453,7 +454,7 @@ router.post("/message", async (req, res) => {
           subject: "New Buyer Registered",
           text: `A new buyer has registered:\nName: ${data.name}\nPhone: ${data.phone}`,
         });
-        message = `🎉 Registration complete! Welcome to Zimseek, ${data.name}! 🎊\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+        message = `🎉 Registration complete! Welcome to Zimseek, ${data.name}! 🎊\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
         currentState[from].state = states.BUYER_MENU;
       } else if (incomingMsg === "2") {
         message = "Registration cancelled. Restarting...";
@@ -472,11 +473,11 @@ router.post("/message", async (req, res) => {
       }
       if (incomingMsg === "1") {
         data.searchType = "retailer";
-        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
         currentState[from].state = states.BUYER_MENU;
       } else if (incomingMsg === "2") {
         data.searchType = "farmer";
-        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
         currentState[from].state = states.BUYER_MENU;
       } else {
         message =
@@ -779,7 +780,7 @@ router.post("/message", async (req, res) => {
           const buyerId = Object.keys(buyers)[0];
           data.buyerId = buyerId;
           data.name = buyers[buyerId].name;
-          message = `🎉 Welcome back, ${data.name}! 👋\n\n🛒 What would you like to do today?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+          message = `🎉 Welcome back, ${data.name}! 👋\n\n🛒 What would you like to do today?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
           currentState[from].state = states.BUYER_MENU;
         } else {
           message =
@@ -800,11 +801,11 @@ router.post("/message", async (req, res) => {
       }
       if (incomingMsg === "1") {
         data.searchType = "retailer";
-        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
         currentState[from].state = states.BUYER_MENU;
       } else if (incomingMsg === "2") {
         data.searchType = "farmer";
-        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
         currentState[from].state = states.BUYER_MENU;
       } else {
         message =
@@ -837,7 +838,7 @@ router.post("/message", async (req, res) => {
 
     case states.BUYER_SEARCH_TYPE:
       if (incomingMsg === "0") {
-        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
         currentState[from].state = states.BUYER_MENU;
         break;
       }
@@ -864,7 +865,7 @@ router.post("/message", async (req, res) => {
       break;
     case states.BUYER_SEARCH_CATEGORY:
       if (incomingMsg === "0") {
-        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
         currentState[from].state = states.BUYER_MENU;
         break;
       }
@@ -920,7 +921,7 @@ router.post("/message", async (req, res) => {
           zimbabweCities.forEach((city, idx) => {
             cityMsg += `${idx + 1}️⃣ ${city}\n`;
           });
-          cityMsg += "6️⃣ Other (type city/suburb)";
+          // cityMsg += "6️⃣ Other (type city/suburb)";
           message = cityMsg + "\nType 0 to back to menu";
           currentState[from].state = states.BUYER_SEARCH_LOCATION;
         }
@@ -972,7 +973,7 @@ router.post("/message", async (req, res) => {
         zimbabweCities.forEach((city, idx) => {
           cityMsg += `${idx + 1}️⃣ ${city}\n`;
         });
-        cityMsg += "6️⃣ Other (type city/suburb)";
+        // cityMsg += "6️⃣ Other (type city/suburb)";
         message = cityMsg + "\nType 0 to back to menu";
         currentState[from].state = states.BUYER_SEARCH_LOCATION;
       }
@@ -999,7 +1000,7 @@ router.post("/message", async (req, res) => {
         zimbabweCities.forEach((city, idx) => {
           cityMsg += `${idx + 1}️⃣ ${city}\n`;
         });
-        cityMsg += "6️⃣ Other (type city/suburb)";
+        // cityMsg += "6️⃣ Other (type city/suburb)";
         message = cityMsg + "\nType 0 to back to menu";
         currentState[from].state = states.BUYER_SEARCH_LOCATION;
       } else if (incomingMsg === (data.suggestions.length + 1).toString()) {
@@ -1136,7 +1137,7 @@ router.post("/message", async (req, res) => {
         zimbabweCities.forEach((city, idx) => {
           cityMsg += `${idx + 1}️⃣ ${city}\n`;
         });
-        cityMsg += "6️⃣ Other (type city/suburb)";
+        // cityMsg += "6️⃣ Other (type city/suburb)";
         message = cityMsg + "\nType 0 to back to menu";
         currentState[from].state = states.BUYER_SEARCH_LOCATION;
         break;
@@ -1177,7 +1178,7 @@ router.post("/message", async (req, res) => {
             `Location: ${product.city || sellerCity}, ${
               product.suburb || sellerSuburb
             }\n\n` +
-            `🛒 Buyer Menu:\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit`;
+            `🛒 Buyer Menu:\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit`;
           currentState[from].state = states.BUYER_MENU;
         } else {
           const listingSnap = await db
@@ -1211,7 +1212,7 @@ router.post("/message", async (req, res) => {
             `Location: ${listing.city || sellerCity}, ${
               listing.suburb || sellerSuburb
             }\n\n` +
-            `🛒 Buyer Menu:\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit`;
+            `🛒 Buyer Menu:\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit`;
           currentState[from].state = states.BUYER_MENU;
         }
       } else {
@@ -1232,7 +1233,7 @@ router.post("/message", async (req, res) => {
       message =
         "Chat session active. Type 'exit' to return.\nType 0 to back to start";
       if (incomingMsg.toLowerCase() === "exit") {
-        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products & Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
+        message = `🎉 Welcome to Zimseek, ${data.name}! 👋\n\n🛒 What would you like to do?\n\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\n`;
         currentState[from].state = states.BUYER_MENU;
       }
       break;
@@ -1826,34 +1827,54 @@ router.post("/message", async (req, res) => {
       }
       break;
 
-    case states.contact_admin:
-      if (!data.sellerId) {
-        message = "Please login again.";
-        currentState[from].state = states.START;
-      } else {
-        const sellerName = data.name || "Unknown Seller";
-        const sellerPhone = data.phone || "Unknown Phone";
-        const sellerType = data.businessType || "unknown";
-        safeSendMail({
-          from: process.env.GODADDY_EMAIL,
-          to: process.env.GODADDY_EMAIL,
-          subject: `${
-            sellerType.charAt(0).toUpperCase() + sellerType.slice(1)
-          } Contact Admin`,
-          text: `Seller: ${sellerName} (Phone: ${sellerPhone})\nType: ${sellerType}\nMessage: ${
-            incomingMsg || "No message provided"
-          }`,
-        });
+    case states.contact_admin: {
+      // Allow all users (seller, buyer, guest) to contact admin
+      const userType = data.businessType || (data.buyerId ? "buyer" : "guest");
+      const userName =
+        data.name || (userType === "buyer" ? "Unknown Buyer" : "Unknown User");
+      const userPhone = data.phone || "Unknown Phone";
+      let subject = "Contact Admin";
+      let text = `User: ${userName} (Phone: ${userPhone})\nType: ${userType}\nMessage: ${
+        incomingMsg || "No message provided"
+      }`;
+      if (userType === "farmer" || userType === "retailer") {
+        subject = `${
+          userType.charAt(0).toUpperCase() + userType.slice(1)
+        } Contact Admin`;
+        text = `Seller: ${userName} (Phone: ${userPhone})\nType: ${userType}\nMessage: ${
+          incomingMsg || "No message provided"
+        }`;
+      } else if (userType === "buyer") {
+        subject = "Buyer Contact Admin";
+        text = `Buyer: ${userName} (Phone: ${userPhone})\nMessage: ${
+          incomingMsg || "No message provided"
+        }`;
+      }
+      safeSendMail({
+        from: process.env.GODADDY_EMAIL,
+        to: process.env.GODADDY_EMAIL,
+        subject,
+        text,
+      });
+      if (userType === "farmer") {
         message =
-          "Your message has been sent to admin.\n\n" +
-          (data.businessType === "farmer"
-            ? "🚜 Farmer Menu:\n1️⃣ ➕ Add Produce Listing\n2️⃣ 📋 View My Listings\n3️⃣ ✏️ Edit Listings\n4️⃣ 📞 Contact Support\n5️⃣ 🚪 Exit"
-            : "🏪 Seller Menu:\n1️⃣ ➕ Add New Product\n2️⃣ 📋 View My Products\n3️⃣ ✏️ Edit Product\n4️⃣ 📞 Contact Support\n5️⃣ 🚪 Exit") +
-          "\nType 0 to back to main menu";
-        currentState[from].state =
-          data.businessType === "farmer" ? states.FARMER_MENU : states.MENU;
+          "Your message has been sent to admin.\n\n🚜 Farmer Menu:\n1️⃣ ➕ Add Produce Listing\n2️⃣ 📋 View My Listings\n3️⃣ ✏️ Edit Listings\n4️⃣ 📞 Contact Support\n5️⃣ 🚪 Exit\nType 0 to back to main menu";
+        currentState[from].state = states.FARMER_MENU;
+      } else if (userType === "retailer") {
+        message =
+          "Your message has been sent to admin.\n\n🏪 Seller Menu:\n1️⃣ ➕ Add New Product\n2️⃣ 📋 View My Products\n3️⃣ ✏️ Edit Product\n4️⃣ 📞 Contact Support\n5️⃣ 🚪 Exit\nType 0 to back to main menu";
+        currentState[from].state = states.MENU;
+      } else if (userType === "buyer") {
+        message =
+          "Your message has been sent to admin.\n\n🛒 Buyer Menu:\n1️⃣ 🔍 Search Products and Listings\n2️⃣ 📞 Contact Support\n3️⃣ 🚪 Exit\nType 0 to back to main menu";
+        currentState[from].state = states.BUYER_MENU;
+      } else {
+        message =
+          "Your message has been sent to admin.\n\nWelcome to Zimseek!\nType 0 to return to the main menu.";
+        currentState[from].state = states.START;
       }
       break;
+    }
 
     default:
       message = "Invalid state. Restarting...";
